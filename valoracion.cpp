@@ -10,6 +10,7 @@ Valoracion::Valoracion() {
 	this -> setId(0);
 	this -> contenido = 0;
 	this -> usuario = 0;
+	this -> setSegundosVisualizados(0);
 	this -> setCalificacion(0);
 	Fecha f;
 	this -> setFechaValoracion(f);
@@ -19,6 +20,7 @@ Valoracion::~Valoracion() {
 	this -> setId(0);
 	this -> contenido = 0;
 	this -> usuario = 0;
+	this -> setSegundosVisualizados(0);
 	this -> setCalificacion(0);
 	Fecha f;
 	this -> setFechaValoracion(f);
@@ -34,6 +36,10 @@ Contenido& Valoracion::getContenido() {
 
 Usuario& Valoracion::getUsuario() {
 	return *(this -> usuario);
+}
+
+int Valoracion::getSegundosVisualizados() const {
+	return this -> segundos_visualizados;
 }
 
 float Valoracion::getCalificacion() const {
@@ -56,6 +62,10 @@ void Valoracion::setUsuario(Usuario &x) {
 	this -> usuario = &x;
 }
 
+void Valoracion::setSegundosVisualizados(int x) {
+	this -> segundos_visualizados = x;
+}
+
 void Valoracion::setCalificacion(float x) {
 	this -> calificacion = x;
 }
@@ -64,20 +74,21 @@ void Valoracion::setFechaValoracion(Fecha &x) {
 	this -> fechaValoracion = x;
 }
 
-void Valoracion::setValoracion(int id, Contenido &contenido, Usuario &usuario, float calificacion, Fecha &fechaValoracion) {
+void Valoracion::setValoracion(int id, Contenido &contenido, Usuario &usuario, int segundos_visualizados, float calificacion, Fecha &fechaValoracion) {
 	this -> setId(id);
 	this -> setContenido(contenido);
 	this -> setUsuario(usuario);
+	this -> setSegundosVisualizados(segundos_visualizados);
 	this -> setCalificacion(calificacion);
 	this -> setFechaValoracion(fechaValoracion);
 }
 
 Valoracion& Valoracion::operator=(Valoracion &v) {
-	this -> setValoracion(v.getId(), v.getContenido(), v.getUsuario(), v.getCalificacion(), v.getFechaValoracion());
+	this -> setValoracion(v.getId(), v.getContenido(), v.getUsuario(), v.getSegundosVisualizados(), v.getCalificacion(), v.getFechaValoracion());
 	return *this;
 }
 
 ostream& operator<<(ostream &flujo, Valoracion &v) {
-	flujo << v.getId() << ": " << v.getUsuario().getUserName() << " -> " << v.getContenido().getTitulo() << ", " << v.getCalificacion() << "/5 " << v.getFechaValoracion();
+	flujo << v.getId() << ": " << v.getUsuario().getUserName() << " -> " << v.getContenido().getTitulo() << ", " << v.getCalificacion() << "/5 " << v.getFechaValoracion() << ", " << v.getSegundosVisualizados() << " segundos";
 	return flujo;
 }

@@ -20,6 +20,7 @@ class Contenido {
 		int timesLiked;
 		int timesNotLiked;
 		float cristoRating;
+		bool activo;
 		
 	public:
 		/*
@@ -131,6 +132,15 @@ class Contenido {
 		float getCristoRating() const;
 		
 		/*
+		 * @brief Módulo que obtiene el activo de una variable de tipo Contenido.
+		 * @param this (E) Contenido del que se quiere obtener el activo.
+		 * @return (S) activo del contenido.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		bool getActivo() const;
+		
+		/*
 		 * @brief Módulo que cambia el id de una variable de tipo Contenido.
 		 * @param this (E/S) Contenido que se quiere cambiar el id.
 		 * @param x (E) Id del contenido.
@@ -230,7 +240,6 @@ class Contenido {
 		 */
 		void setTimesNotLiked(int x);
 		
-		
 		/*
 		 * @brief Módulo que cambia cristoRating de una variable de tipo Contenido.
 		 * @param this (E/S) Contenido que se quiere cambiar cristoRating.
@@ -240,6 +249,16 @@ class Contenido {
 		 * @version 1.0
 		 */
 		void setCristoRating(float x);
+		
+		/*
+		 * @brief Módulo que cambia el activo de una variable de tipo Contenido.
+		 * @param this (E/S) Contenido que se quiere cambiar el activo.
+		 * @param x (E) activo del contenido.
+		 * @post Se cambió el activo.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setActivo(bool x);
 		
 		/*
 		 * @brief Módulo que cambia los votos de una variable de tipo Contenido.

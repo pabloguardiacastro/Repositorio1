@@ -47,6 +47,22 @@ int Sistema::getTotalUnlikes() {
 	return this -> totalUnlikes;
 }
 
+int Sistema::getLastContentId() {
+	return this -> last_content_id;
+}
+
+int Sistema::getLastUserId() {
+	return this -> last_user_id;
+}
+
+int Sistema::getLastAssessmentId() {
+	return this -> last_assessment_id;
+}
+
+Usuario& Sistema::getUsuarioLogado() {
+	return *(this -> usuario_logado);
+}
+
 void Sistema::setUtilUsuarios(int x) {
 	this -> util_usuarios = x;
 }
@@ -85,6 +101,22 @@ void Sistema::setTotalLikes(int x) {
 
 void Sistema::setTotalUnlikes(int x) {
 	this -> totalUnlikes = x;
+}
+
+void Sistema::setLastContentId(int x) {
+	this -> last_content_id = x;
+}
+
+void Sistema::setLastUserId(int x) {
+	this -> last_user_id = x;
+}
+
+void Sistema::setLastAssessmentId(int x) {
+	this -> last_assessment_id = x;
+}
+
+void Sistema::setUsuarioLogado(Usuario &x) {
+	this -> usuario_logado = &(x);
 }
 
 Usuario& Sistema::getUsuario(int pos) {
@@ -144,7 +176,94 @@ void Sistema::setValoracion(int pos, Valoracion &v) {
 	}
 }
 
-Sistema::Sistema() {
+void Sistema::programa() {
+	int opcion;
+	bool salir = false;
+	do {
+		bool seguir = true;
+		this -> login();
+		while (seguir && !salir) {
+			if (this -> getUsuarioLogado().getTipo() == "admin") {
+				opcion = this -> menuAdmin();
+				switch (opcion) {
+					case 10:
+						seguir = false;
+						break;
+					case 20:
+						delete this ;
+						this -> inicializar();
+						break;
+					case 30:
+						cout << *(this ) << endl;
+						break;
+					case 41:
+						this -> top3General();
+						break;
+					case 42:
+						this -> top3ContenidosTipo();
+						break;
+					case 43:
+						this -> topUsuarios();
+						break;
+					case 51:
+						break;
+					case 52:
+						break;
+					case 53:
+						this -> buscarContenido();
+						break;
+					case 54:
+						break;
+					case 55:
+						this -> consultarValoracionContenido();
+						break;
+					case 61:
+						break;
+					case 62:
+						break;
+					case 63:
+						break;
+					case 64:
+						break;
+					case 71:
+						break;
+					case 72:
+						break;
+					case 80:
+						salir = true;
+						break;
+				}
+			} else {
+				opcion = this  -> menuCliente();
+				switch (opcion) {
+					case 1:
+						seguir = false;
+						break;
+					case 2:
+						this -> consultarValoracionesUsuario();
+						break;
+					case 3:
+						this -> gustarContenido();
+						this -> calcularCristoflixRating();
+						break;
+					case 4:
+						this -> nogustarContenido();
+						this -> calcularCristoflixRating();
+						break;
+					case 5:
+						this -> visualizarContenido();
+						this -> calcularCristoflixRating();
+						break;
+					case 6:
+						salir = true;
+						break;
+				}
+			}
+		}
+	} while (!salir);
+}
+
+void Sistema::inicializar() {
 	this -> setDimUsuarios(10);
 	this -> setUtilUsuarios(0);
 	this -> v_usuarios = new Usuario[this -> getDimUsuarios()];
@@ -159,54 +278,42 @@ Sistema::Sistema() {
 	this -> setTotalLikes(0);
 	this -> setTotalUnlikes(0);
 	
-	Fecha f[15];
-	f[0].setFecha(14, 8, 1999);
-	f[1].setFecha(10, 6, 2004);
-	f[2].setFecha(29, 10, 2001);
-	f[3].setFecha(24, 3, 2004);
-	f[4].setFecha(28, 12, 2000);
-	f[5].setFecha(5, 7, 2004);
-	f[6].setFecha(14, 2, 2004);
-	f[7].setFecha(12, 11, 2003);
-	f[8].setFecha(20, 4, 2004);
-	f[9].setFecha(21, 9, 2004);
-	f[10].setFecha(16, 3, 2004);
-	f[11].setFecha(21, 2, 1991);
-	f[12].setFecha(16, 10, 2005);
-	f[13].setFecha(19, 12, 2001);
-	f[14].setFecha(22, 11, 1999);
-	
-	Usuario u[15];
-	u[0].setUsuario(0, "night-man", "jdsf", "José David", "Sánchez", "Fernández", f[0], true, "cliente");
-	u[1].setUsuario(1, "ice-man", "gatogordo", "Pablo", "Guardia", "Castro", f[1], true, "admin");
-	u[2].setUsuario(2, "dfpm", "halaMadrid10", "David Francesc", "Pons", "Moll", f[2], true, "cliente");
-	u[3].setUsuario(3, "sergio24m", "242424", "Sergio", "Contreras", "Lucas", f[3], true, "cliente");
-	u[4].setUsuario(4, "polgs", "ms19", "Henry Paul", "García", "Simbaña", f[4], true, "cliente");
-	u[5].setUsuario(5, "AntMan", "aguakate9", "Antonio Manuel", "Velasco", "Rivera", f[5], true, "cliente");
-	u[6].setUsuario(6, "alexmrdgz", "q7r8m5", "Alejandro", "Miranda", "Rodríguez", f[6], true, "cliente");
-	u[7].setUsuario(7, "llamasl", "7654", "Luis", "LLamas", "Ramón", f[7], true, "cliente");
-	u[8].setUsuario(8, "game-master", "toilette", "Carlos", "Polo", "Martín", f[8], true, "cliente");
-	u[9].setUsuario(9, "AlexMrtnzz21", "q100", "Alejandro", "Martínez", "Suárez", f[9], true, "cliente");
-	u[10].setUsuario(10, "AuraEqualizer", "Ludopatia1600", "María", "Garrido", "Castellano", f[10], true, "cliente");
-	u[11].setUsuario(11, "teffuka", "1234", "Natalia", "Serantes", "Cortez", f[11], true, "cliente");
-	u[12].setUsuario(12, "madridistashdp", "culehastalamuerte", "Gonzalo", "Bouso", "Gómez", f[12], true, "cliente");
-	u[13].setUsuario(13, "kxnxdx", "3333", "Cristina", "López", "Cabrera", f[13], true, "cliente");
-	u[14].setUsuario(14, "Napoleon", "221199", "Hanok", "Martín", "Expósito", f[14], true, "cliente");
+	Fecha f;
+	Usuario *u = new Usuario[15];
+	f.setFecha(14, 8, 1999);
+	u[0].setUsuario(0, "night-man", "jdsf", "José David", "Sánchez", "Fernández", f, true, "cliente");
+	f.setFecha(10, 6, 2004);
+	u[1].setUsuario(1, "ice-man", "gatogordo", "Pablo", "Guardia", "Castro", f, true, "admin");
+	f.setFecha(29, 10, 2001);
+	u[2].setUsuario(2, "dfpm", "halaMadrid10", "David Francesc", "Pons", "Moll", f, true, "cliente");
+	f.setFecha(24, 3, 2004);
+	u[3].setUsuario(3, "sergio24m", "242424", "Sergio", "Contreras", "Lucas", f, true, "cliente");
+	f.setFecha(28, 12, 2000);
+	u[4].setUsuario(4, "polgs", "ms19", "Henry Paul", "García", "Simbaña", f, true, "cliente");
+	f.setFecha(5, 7, 2004);
+	u[5].setUsuario(5, "AntMan", "aguakate9", "Antonio Manuel", "Velasco", "Rivera", f, true, "cliente");
+	f.setFecha(14, 2, 2004);
+	u[6].setUsuario(6, "alexmrdgz", "q7r8m5", "Alejandro", "Miranda", "Rodríguez", f, true, "cliente");
+	f.setFecha(12, 11, 2003);
+	u[7].setUsuario(7, "llamasl", "7654", "Luis", "LLamas", "Ramón", f, true, "cliente");
+	f.setFecha(20, 4, 2004);
+	u[8].setUsuario(8, "game-master", "toilette", "Carlos", "Polo", "Martín", f, true, "cliente");
+	f.setFecha(21, 9, 2004);
+	u[9].setUsuario(9, "AlexMrtnzz21", "q100", "Alejandro", "Martínez", "Suárez", f, true, "cliente");
+	f.setFecha(16, 3, 2004);
+	u[10].setUsuario(10, "AuraEqualizer", "Ludopatia1600", "María", "Garrido", "Castellano", f, true, "cliente");
+	f.setFecha(21, 2, 1991);
+	u[11].setUsuario(11, "teffuka", "1234", "Natalia", "Serantes", "Cortez", f, true, "cliente");
+	f.setFecha(16, 10, 2005);
+	u[12].setUsuario(12, "madridistashdp", "culehastalamuerte", "Gonzalo", "Bouso", "Gómez", f, true, "cliente");
+	f.setFecha(19, 12, 2001);
+	u[13].setUsuario(13, "kxnxdx", "3333", "Cristina", "López", "Cabrera", f, true, "cliente");
+	f.setFecha(22, 11, 1999);
+	u[14].setUsuario(14, "Napoleon", "221199", "Hanok", "Martín", "Expósito", f, true, "cliente");
 	for (int usuario = 0; usuario < 15; usuario++) {
 		this -> setUsuario(this -> getUtilUsuarios(), u[this -> getUtilUsuarios()]);
 	}
-	
-	Fecha f2[10];
-	f2[0].setFecha(19, 10, 2014);
-	f2[1].setFecha(31, 6, 1999);
-	f2[2].setFecha(3, 10, 2008);
-	f2[3].setFecha(13, 1, 1995);
-	f2[4].setFecha(26, 7, 2019);
-	f2[5].setFecha(6, 9, 2003);
-	f2[6].setFecha(25, 4, 2019);
-	f2[7].setFecha(8, 1, 2021);
-	f2[8].setFecha(2, 5, 2017);
-	f2[9].setFecha(11, 7, 2016);
+	delete [] u;
 	
 	Pelicula *c0 = new Pelicula;
 	Pelicula *c1 = new Pelicula;
@@ -218,16 +325,29 @@ Sistema::Sistema() {
 	Serie *c7 = new Serie;
 	Serie *c8 = new Serie;
 	Serie *c9 = new Serie;
-	c0 -> setPelicula(0, "El corredor del laberinto", f2[0], 113 , "Ciencia Ficción", 6.8 , 511000, "Wes Ball");
-	c1 -> setPelicula(1, "The Matrix", f2[1], 136 , "Ciencia Ficción", 8.7 , 2100000, "Lilly Wachowski");
-	c2 -> setSerie(2, "Star Wars: The Clone Wars", f2[2], 23 , "Ciencia Ficción", 8.4 , 121000, 133);
-	c3 -> setPelicula(3, "Pulp Fiction", f2[3], 154 , "Crimen", 8.9 , 2200000, "Quentin Tarantino");
-	c4 -> setSerie(4, "The boys", f2[4], 60 , "Acción", 8.7 , 656000, 24);
-	c5 -> setSerie(5, "One piece", f2[5], 24 , "Animación", 10 , 2100000, 1105);
-	c6 -> setPelicula(6, "Vengadores: Endgame", f2[6], 143 , "Acción", 8.4 , 1300000, "Joe Russo");
-	c7 -> setSerie(7, "Lupin", f2[7], 45 , "Crimen", 7.5 , 139000, 17);
-	c8 -> setSerie(8, "La casa de papel", f2[8], 60 , "Crimen", 8.2 , 534000, 48);
-	c9 -> setSerie(9, "Stranger Things", f2[9], 60 , "Fantasía", 8.7 , 1300000, 34);
+	Documental *c10 = new Documental;
+	f.setFecha(19, 10, 2014);
+	c0 -> setPelicula(0, "El corredor del laberinto", f, 113 , "Ciencia Ficción", 6.8 , 511000, "Wes Ball");
+	f.setFecha(31, 6, 1999);
+	c1 -> setPelicula(1, "The Matrix", f, 136 , "Ciencia Ficción", 8.7 , 2100000, "Lilly Wachowski");
+	f.setFecha(3, 10, 2008);
+	c2 -> setSerie(2, "Star Wars: The Clone Wars", f, 23 , "Ciencia Ficción", 8.4 , 121000, 133);
+	f.setFecha(13, 1, 1995);
+	c3 -> setPelicula(3, "Pulp Fiction", f, 154 , "Crimen", 8.9 , 2200000, "Quentin Tarantino");
+	f.setFecha(26, 7, 2019);
+	c4 -> setSerie(4, "The boys", f, 60 , "Acción", 8.7 , 656000, 24);
+	f.setFecha(6, 9, 2003);
+	c5 -> setSerie(5, "One piece", f, 24 , "Animación", 10 , 2100000, 1105);
+	f.setFecha(25, 4, 2019);
+	c6 -> setPelicula(6, "Vengadores: Endgame", f, 143 , "Acción", 8.4 , 1300000, "Joe Russo");
+	f.setFecha(8, 1, 2021);
+	c7 -> setSerie(7, "Lupin", f, 45 , "Crimen", 7.5 , 139000, 17);
+	f.setFecha(2, 5, 2017);
+	c8 -> setSerie(8, "La casa de papel", f, 60 , "Crimen", 8.2 , 534000, 48);
+	f.setFecha(11, 7, 2016);
+	c9 -> setSerie(9, "Stranger Things", f, 60 , "Fantasía", 8.7 , 1300000, 34);
+	f.setFecha(25, 10, 2023);
+	c10 -> setDocumental(10, "La vida en nuestro planeta", f, 432 , "Naturaleza", 8.1 , 5600, "Historia");
 	this -> setContenido(this -> getUtilContenidos(), *(c0));
 	this -> setContenido(this -> getUtilContenidos(), *(c1));
 	this -> setContenido(this -> getUtilContenidos(), *(c2));
@@ -238,125 +358,153 @@ Sistema::Sistema() {
 	this -> setContenido(this -> getUtilContenidos(), *(c7));
 	this -> setContenido(this -> getUtilContenidos(), *(c8));
 	this -> setContenido(this -> getUtilContenidos(), *(c9));
+	this -> setContenido(this -> getUtilContenidos(), *(c10));
 	
-	Fecha f3[45];
-	f3[0].setFecha(7, 11, 2022);
-	f3[1].setFecha(18, 9, 2021);
-	f3[2].setFecha(19, 12, 2023);
-	f3[3].setFecha(2, 12, 2020);
-	f3[4].setFecha(19, 6, 2023);
-	f3[5].setFecha(7, 9, 2009);
-	f3[6].setFecha(7, 11, 2023);
-	f3[7].setFecha(14, 7, 2022);
-	f3[8].setFecha(17, 10, 2024);
-	f3[9].setFecha(19, 7, 2024);
-	f3[10].setFecha(20, 8, 2023);
-	f3[11].setFecha(15, 5, 2016);
-	f3[12].setFecha(19, 4, 2019);
-	f3[13].setFecha(21, 7, 2016);
-	f3[14].setFecha(20, 9, 2015);
-	f3[15].setFecha(22, 1, 2016);
-	f3[16].setFecha(23, 7, 2019);
-	f3[17].setFecha(24, 10, 2014);
-	f3[18].setFecha(25, 3, 2022);
-	f3[19].setFecha(26, 4, 2019);
-	f3[20].setFecha(27, 5, 2017);
-	f3[21].setFecha(17, 5, 2018);
-	f3[22].setFecha(2, 4, 2019);
-	f3[23].setFecha(30, 3, 2022);
-	f3[24].setFecha(1, 4, 2019);
-	f3[25].setFecha(2, 4, 2016);
-	f3[26].setFecha(3, 4, 2021);
-	f3[27].setFecha(24, 1, 2022);
-	f3[28].setFecha(20, 8, 2023);
-	f3[29].setFecha(29, 7, 2024);
-	f3[30].setFecha(30, 12, 2017);
-	f3[31].setFecha(24, 6, 2013);
-	f3[32].setFecha(21, 9, 2021);
-	f3[33].setFecha(11, 7, 2012);
-	f3[34].setFecha(21, 6, 2020);
-	f3[35].setFecha(1, 1, 2021);
-	f3[36].setFecha(5, 6, 2021);
-	f3[37].setFecha(29, 8, 2002);
-	f3[38].setFecha(29, 8, 2002);
-	f3[39].setFecha(2, 2, 2024);
-	f3[40].setFecha(2, 2, 2021);
-	f3[41].setFecha(1, 3, 2022);
-	f3[42].setFecha(28, 4, 2019);
-	f3[43].setFecha(18, 5, 2024);
-	f3[44].setFecha(31, 7, 2023);
-	
-	Valoracion v[45];
-	v[0].setValoracion(0, this -> getContenido(1), this -> getUsuario(0), 4.45, f3[0]);
-	v[1].setValoracion(1, this -> getContenido(5), this -> getUsuario(0), 5, f3[1]);
-	v[2].setValoracion(2, this -> getContenido(9), this -> getUsuario(0), 1.75, f3[2]);
-	v[3].setValoracion(3, this -> getContenido(6), this -> getUsuario(1), 4.5, f3[3]);
-	v[4].setValoracion(4, this -> getContenido(4), this -> getUsuario(1), 3, f3[4]);
-	v[5].setValoracion(5, this -> getContenido(2), this -> getUsuario(1), 3.65, f3[5]);
-	v[6].setValoracion(6, this -> getContenido(5), this -> getUsuario(2), 5, f3[6]);
-	v[7].setValoracion(7, this -> getContenido(8), this -> getUsuario(2), 4.15, f3[7]);
-	v[8].setValoracion(8, this -> getContenido(7), this -> getUsuario(2), 3.9, f3[8]);
-	v[9].setValoracion(9, this -> getContenido(0), this -> getUsuario(3), 2.5, f3[9]);
-	v[10].setValoracion(10, this -> getContenido(8), this -> getUsuario(3), 3.5, f3[10]);
-	v[11].setValoracion(11, this -> getContenido(5), this -> getUsuario(3), 2.5, f3[11]);
-	v[12].setValoracion(12, this -> getContenido(6), this -> getUsuario(4), 4.35, f3[12]);
-	v[13].setValoracion(13, this -> getContenido(9), this -> getUsuario(4), 4.5, f3[13]);
-	v[14].setValoracion(14, this -> getContenido(5), this -> getUsuario(4), 4.9, f3[14]);
-	v[15].setValoracion(15, this -> getContenido(3), this -> getUsuario(5), 4.65, f3[15]);
-	v[16].setValoracion(16, this -> getContenido(4), this -> getUsuario(5), 1.15, f3[16]);
-	v[17].setValoracion(17, this -> getContenido(0), this -> getUsuario(5), 3.55, f3[17]);
-	v[18].setValoracion(18, this -> getContenido(2), this -> getUsuario(6), 3.95, f3[18]);
-	v[19].setValoracion(19, this -> getContenido(6), this -> getUsuario(6), 3.25, f3[19]);
-	v[20].setValoracion(20, this -> getContenido(8), this -> getUsuario(6), 2.55, f3[20]);
-	v[21].setValoracion(21, this -> getContenido(0), this -> getUsuario(7), 4.15, f3[21]);
-	v[22].setValoracion(22, this -> getContenido(1), this -> getUsuario(7), 4.5, f3[22]);
-	v[23].setValoracion(23, this -> getContenido(9), this -> getUsuario(7), 4.4, f3[23]);
-	v[24].setValoracion(24, this -> getContenido(4), this -> getUsuario(8), 4.35, f3[24]);
-	v[25].setValoracion(25, this -> getContenido(3), this -> getUsuario(8), 4.6, f3[25]);
-	v[26].setValoracion(26, this -> getContenido(7), this -> getUsuario(8), 3.8, f3[26]);
-	v[27].setValoracion(27, this -> getContenido(0), this -> getUsuario(9), 3, f3[27]);
-	v[28].setValoracion(28, this -> getContenido(3), this -> getUsuario(9), 3.5, f3[28]);
-	v[29].setValoracion(29, this -> getContenido(5), this -> getUsuario(9), 5, f3[29]);
-	v[30].setValoracion(30, this -> getContenido(8), this -> getUsuario(10), 4.25, f3[30]);
-	v[31].setValoracion(31, this -> getContenido(3), this -> getUsuario(10), 5, f3[31]);
-	v[32].setValoracion(32, this -> getContenido(9), this -> getUsuario(10), 3.75, f3[32]);
-	v[33].setValoracion(33, this -> getContenido(5), this -> getUsuario(11), 5, f3[33]);
-	v[34].setValoracion(34, this -> getContenido(6), this -> getUsuario(11), 5, f3[34]);
-	v[35].setValoracion(35, this -> getContenido(4), this -> getUsuario(11), 2.1, f3[35]);
-	v[36].setValoracion(36, this -> getContenido(5), this -> getUsuario(12), 3.75, f3[36]);
-	v[37].setValoracion(37, this -> getContenido(1), this -> getUsuario(12), 4, f3[37]);
-	v[38].setValoracion(38, this -> getContenido(3), this -> getUsuario(12), 1.75, f3[38]);
-	v[39].setValoracion(39, this -> getContenido(5), this -> getUsuario(13), 5, f3[39]);
-	v[40].setValoracion(40, this -> getContenido(8), this -> getUsuario(13), 3.85, f3[40]);
-	v[41].setValoracion(41, this -> getContenido(2), this -> getUsuario(13), 5, f3[41]);
-	v[42].setValoracion(42, this -> getContenido(6), this -> getUsuario(14), 3.9, f3[42]);
-	v[43].setValoracion(43, this -> getContenido(5), this -> getUsuario(14), 4.5, f3[43]);
-	v[44].setValoracion(44, this -> getContenido(0), this -> getUsuario(14), 4.25, f3[44]);
-	for (int valoracion = 0; valoracion < 45; valoracion++) {
+	Valoracion *v = new Valoracion[22];
+	f.setFecha(7, 6, 2021);
+	v[0].setValoracion(0, this -> getContenido(3), this -> getUsuario(0), 2275, 4.5, f);
+	f.setFecha(21, 3, 2023);
+	v[1].setValoracion(1, this -> getContenido(5), this -> getUsuario(0), 2341, 5, f);
+	f.setFecha(12, 12, 2016);
+	v[2].setValoracion(2, this -> getContenido(1), this -> getUsuario(0), 334, 4, f);
+	f.setFecha(21, 5, 2024);
+	v[3].setValoracion(3, this -> getContenido(10), this -> getUsuario(0), 1232, 3.5, f);
+	f.setFecha(2, 12, 2020);
+	v[4].setValoracion(4, this -> getContenido(6), this -> getUsuario(1), 500, 4.5, f);
+	f.setFecha(3, 12, 2020);
+	v[5].setValoracion(5, this -> getContenido(5), this -> getUsuario(2), 1200, 4.5, f);
+	f.setFecha(3, 12, 2020);
+	v[6].setValoracion(6, this -> getContenido(2), this -> getUsuario(3), 144000, 4.5, f);
+	f.setFecha(4, 11, 2021);
+	v[7].setValoracion(7, this -> getContenido(5), this -> getUsuario(4), 3000, 4, f);
+	f.setFecha(5, 2, 2024);
+	v[8].setValoracion(8, this -> getContenido(1), this -> getUsuario(5), 136, 4, f);
+	f.setFecha(12, 3, 2024);
+	v[9].setValoracion(9, this -> getContenido(0), this -> getUsuario(6), 3780, 4, f);
+	f.setFecha(4, 4, 2021);
+	v[10].setValoracion(10, this -> getContenido(5), this -> getUsuario(7), 3000, 4, f);
+	f.setFecha(21, 11, 2023);
+	v[11].setValoracion(11, this -> getContenido(5), this -> getUsuario(8), 2341, 5, f);
+	f.setFecha(8, 2, 2021);
+	v[12].setValoracion(12, this -> getContenido(1), this -> getUsuario(8), 334, 4.1, f);
+	f.setFecha(23, 3, 2018);
+	v[13].setValoracion(13, this -> getContenido(9), this -> getUsuario(8), 3600, 4.3, f);
+	f.setFecha(1, 6, 2023);
+	v[14].setValoracion(14, this -> getContenido(9), this -> getUsuario(9), 3600, 4.5, f);
+	f.setFecha(11, 2, 2024);
+	v[15].setValoracion(15, this -> getContenido(7), this -> getUsuario(9), 11600, 4.2, f);
+	f.setFecha(11, 4, 2023);
+	v[16].setValoracion(16, this -> getContenido(2), this -> getUsuario(9), 8600, 3.8, f);
+	f.setFecha(3, 11, 2023);
+	v[17].setValoracion(17, this -> getContenido(4), this -> getUsuario(10), 7800, 4.45, f);
+	f.setFecha(1, 6, 2023);
+	v[18].setValoracion(18, this -> getContenido(9), this -> getUsuario(11), 3600, 5, f);
+	f.setFecha(16, 10, 2020);
+	v[19].setValoracion(19, this -> getContenido(0), this -> getUsuario(12), 3780, 4.5, f);
+	f.setFecha(12, 12, 2001);
+	v[20].setValoracion(20, this -> getContenido(5), this -> getUsuario(13), 2001, 4.8, f);
+	f.setFecha(3, 6, 2024);
+	v[21].setValoracion(21, this -> getContenido(1), this -> getUsuario(14), 334, 3, f);
+	for (int valoracion = 0; valoracion < 22; valoracion++) {
 		this -> setValoracion(this -> getUtilValoraciones(), v[this -> getUtilValoraciones()]);
 	}
+	delete [] v;
 	
-	for (int usuario = 0; usuario < 15; usuario++) {
-		for (int valoracion = 0; valoracion < 3; valoracion++) {
-			Contenido *elegido = &(this -> getValoracion(usuario * 3 + valoracion).getContenido());
-			this -> getUsuario(usuario).setContenidoVisualizado(usuario, *(elegido));
-			this -> setTotalPlayed(this -> getTotalPlayed() + 1);
-			elegido -> setTimesPlayed(elegido -> getTimesPlayed() + 1);
-			if (this -> getValoracion(usuario * 3 + valoracion).getCalificacion() >= 2.5) {
-				this -> getUsuario(usuario).setContenidoMg(usuario, *(elegido));
-				this -> setTotalLikes(this -> getTotalLikes() + 1);
-				elegido -> setTimesLiked(elegido -> getTimesLiked() + 1);
-			} else {
-				this -> getUsuario(usuario).setContenidoNomg(usuario, *(elegido));
-				this -> setTotalUnlikes(this -> getTotalUnlikes() + 1);
-				elegido -> setTimesNotLiked(elegido -> getTimesNotLiked() + 1);
-			}
-			this -> getUsuario(usuario).setContenidoValorado(usuario, *(elegido));
-			this -> setTotalValorated(this -> getTotalValorated() + 1);
-		}
+	for (int valoracion = 0; valoracion < this -> getUtilValoraciones(); valoracion++) {
+		Usuario *u = &(this -> getValoracion(valoracion).getUsuario());
+		u -> setContenidoVisualizado(u -> getUtilContenidoVisualizado(), this -> getValoracion(valoracion).getContenido());
+		u -> setContenidoValorado(u -> getUtilContenidoValorado(), this -> getValoracion(valoracion).getContenido());
 	}
 	
+	this -> getUsuario(0).setContenidoMg(0, this -> getContenido(1));
+	this -> getUsuario(0).setContenidoMg(1, this -> getContenido(5));
+	this -> getUsuario(1).setContenidoMg(0, this -> getContenido(6));
+	this -> getUsuario(2).setContenidoMg(0, this -> getContenido(5));
+	this -> getUsuario(3).setContenidoMg(0, this -> getContenido(2));
+	this -> getUsuario(4).setContenidoMg(0, this -> getContenido(5));
+	this -> getUsuario(6).setContenidoMg(0, this -> getContenido(7));
+	this -> getUsuario(7).setContenidoMg(0, this -> getContenido(5));
+	this -> getUsuario(8).setContenidoMg(0, this -> getContenido(9));
+	this -> getUsuario(8).setContenidoMg(1, this -> getContenido(5));
+	this -> getUsuario(10).setContenidoMg(0, this -> getContenido(4));
+	this -> getUsuario(12).setContenidoMg(0, this -> getContenido(9));
+	this -> getUsuario(12).setContenidoMg(1, this -> getContenido(5));
+	this -> getUsuario(13).setContenidoMg(0, this -> getContenido(1));
+	this -> getUsuario(13).setContenidoMg(1, this -> getContenido(5));
+	this -> getUsuario(14).setContenidoMg(0, this -> getContenido(1));
+	
+	this -> getUsuario(0).setContenidoNomg(0, this -> getContenido(7));
+	this -> getUsuario(2).setContenidoNomg(0, this -> getContenido(7));
+	this -> getUsuario(2).setContenidoNomg(1, this -> getContenido(2));
+	this -> getUsuario(4).setContenidoNomg(0, this -> getContenido(7));
+	this -> getUsuario(4).setContenidoNomg(1, this -> getContenido(2));
+	this -> getUsuario(8).setContenidoNomg(0, this -> getContenido(1));
+	this -> getUsuario(10).setContenidoNomg(0, this -> getContenido(10));
+	this -> getUsuario(11).setContenidoNomg(0, this -> getContenido(7));
+	this -> getUsuario(13).setContenidoNomg(0, this -> getContenido(9));
+	this -> getUsuario(13).setContenidoNomg(1, this -> getContenido(7));
+	this -> getUsuario(14).setContenidoNomg(0, this -> getContenido(9));
+	this -> getUsuario(14).setContenidoNomg(1, this -> getContenido(4));
+	
+	this -> getContenido(0).setTimesPlayed(2);
+	this -> getContenido(0).setTimesLiked(2);
+	this -> getContenido(0).setTimesNotLiked(0);
+	
+	this -> getContenido(1).setTimesPlayed(4);
+	this -> getContenido(1).setTimesLiked(1);
+	this -> getContenido(1).setTimesNotLiked(1);
+	
+	this -> getContenido(2).setTimesPlayed(2);
+	this -> getContenido(2).setTimesLiked(1);
+	this -> getContenido(2).setTimesNotLiked(2);
+	
+	this -> getContenido(3).setTimesPlayed(1);
+	this -> getContenido(3).setTimesLiked(1);
+	this -> getContenido(3).setTimesNotLiked(0);
+	
+	this -> getContenido(4).setTimesPlayed(1);
+	this -> getContenido(4).setTimesLiked(1);
+	this -> getContenido(4).setTimesNotLiked(1);
+	
+	this -> getContenido(5).setTimesPlayed(6);
+	this -> getContenido(5).setTimesLiked(7);
+	this -> getContenido(5).setTimesNotLiked(0);
+	
+	this -> getContenido(6).setTimesPlayed(1);
+	this -> getContenido(6).setTimesLiked(1);
+	this -> getContenido(6).setTimesNotLiked(0);
+	
+	this -> getContenido(7).setTimesPlayed(1);
+	this -> getContenido(7).setTimesLiked(1);
+	this -> getContenido(7).setTimesNotLiked(5);
+	
+	this -> getContenido(8).setTimesPlayed(0);
+	this -> getContenido(8).setTimesLiked(0);
+	this -> getContenido(8).setTimesNotLiked(0);
+	
+	this -> getContenido(9).setTimesPlayed(3);
+	this -> getContenido(9).setTimesLiked(2);
+	this -> getContenido(9).setTimesNotLiked(2);
+	
+	this -> getContenido(10).setTimesPlayed(1);
+	this -> getContenido(10).setTimesLiked(0);
+	this -> getContenido(10).setTimesNotLiked(1);
+	
+	this -> setTotalPlayed(22);
+	this -> setTotalValorated(22);
+	this -> setTotalLikes(16);
+	this -> setTotalUnlikes(12);
+	this -> setLastContentId(10);
+	this -> setLastUserId(14);
+	this -> setLastAssessmentId(21);
+	
+	this -> setUsuarioLogado(this -> getUsuario(1));
+	
 	this -> calcularCristoflixRating();
+}
+
+Sistema::Sistema() {
+	this -> inicializar();
 }
 
 Sistema::~Sistema() {
@@ -387,6 +535,14 @@ Sistema::~Sistema() {
 	this -> setDimValoraciones(0);
 	delete [] this -> v_valoraciones;
 	this -> v_valoraciones = 0;
+	
+	this -> setTotalPlayed(0);
+	this -> setTotalValorated(0);
+	this -> setTotalLikes(0);
+	this -> setTotalUnlikes(0);
+	this -> setLastContentId(0);
+	this -> setLastUserId(0);
+	this -> setLastAssessmentId(0);
 }
 
 void Sistema::resizeUsuarios(int tamanio) {
@@ -472,6 +628,7 @@ ostream& operator<<(ostream &flujo, Sistema &s) {
 	}
 	flujo << endl;
 	flujo << "Total Played: " << s.getTotalPlayed() << endl;
+	flujo << "Total Valorated: " << s.getTotalValorated() << endl;
 	flujo << "Total Liked: " << s.getTotalLikes() << endl;
 	flujo << "Total Disliked: " << s.getTotalUnlikes() << endl;
 	return flujo;
@@ -501,7 +658,7 @@ int Sistema::buscarUsuarioPorUserName(const string &userName) {
 	return pos;
 }
 
-int Sistema::login() {
+void Sistema::login() {
 	string userName, password;
 	bool correcto = false;
 	int id, pos;
@@ -519,23 +676,22 @@ int Sistema::login() {
 			cout << "El userName o la contrasenia son incorrectos" << endl;
 		}
 	} while (!correcto);
+	this -> setUsuarioLogado(this -> getUsuario(pos));
 	cout << endl << "Ha iniciado sesión como " << this -> getUsuario(pos).getUserName() << endl << endl;
-	return this -> getUsuario(pos).getId();
 }
 
-void Sistema::consultarValoracionesUsuario(int id) {
+void Sistema::consultarValoracionesUsuario() {
 	Valoracion* valoracionesUsuario[this -> getUtilValoraciones()];
 	int util_valoraciones_usuario = 0;
-	int pos = this -> buscarUsuarioPorId(id), idCont;
 	for (int valoracion = 0; valoracion < this -> getUtilValoraciones(); valoracion++) {
-		if (id == this -> getValoracion(valoracion).getUsuario().getId()) {
+		if (&(this -> getUsuarioLogado()) == &(this -> getValoracion(valoracion).getUsuario())) {
 			valoracionesUsuario[util_valoraciones_usuario] = &(this -> getValoracion(valoracion));
 			util_valoraciones_usuario++;
 		}
 	}
-	cout << endl << "Contenidos visualizados: " << this -> getUsuario(pos).getUtilContenidoVisualizado() << endl;
-	cout << "Me gustas: " << this -> getUsuario(pos).getUtilContenidoMg() << endl;
-	cout << "No me gustas: " << this -> getUsuario(pos).getUtilContenidoNomg() << endl << endl;
+	cout << endl << "Contenidos visualizados: " << this -> getUsuarioLogado().getUtilContenidoVisualizado() << endl;
+	cout << "Me gustas: " << this -> getUsuarioLogado().getUtilContenidoMg() << endl;
+	cout << "No me gustas: " << this -> getUsuarioLogado().getUtilContenidoNomg() << endl << endl;
 	cout << "VALORACIONES" << endl;
 	if (util_valoraciones_usuario == 0) {
 		cout << "Aún no has valorado ningún contenido" << endl;
@@ -546,24 +702,25 @@ void Sistema::consultarValoracionesUsuario(int id) {
 	}
 }
 
-void Sistema::valorarContenido(int id) {
+void Sistema::valorarContenido() {
 	bool encontrado = false, valido = false;
-	int pos = this -> buscarUsuarioPorId(id), idCont;
+	int idCont, posCont, segundos;
 	float calificacion;
 	cout << endl;
-	if (this -> getUsuario(pos).getUtilContenidoVisualizado() == 0) {
+	if (this -> getUsuarioLogado().getUtilContenidoVisualizado() == 0) {
 		cout << "Debes visualizar al menos un contenido antes de hacer una valoración" << endl;
 	} else {
-		for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoVisualizado(); contenido++) {
-			this -> getUsuario(pos).getContenidoVisualizado(contenido).print();
+		for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoVisualizado(); contenido++) {
+			this -> getUsuarioLogado().getContenidoVisualizado(contenido).print();
 			cout << endl;
 		}
 		cout << endl << "Introduce el id del contenido que quieres valorar: ";
 		do {
 			cin >> idCont;
-			for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoVisualizado() && !encontrado; contenido++) {
-				if (idCont == this -> getUsuario(pos).getContenidoVisualizado(contenido).getId()) {
+			for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoVisualizado() && !encontrado; contenido++) {
+				if (idCont == this -> getUsuarioLogado().getContenidoVisualizado(contenido).getId()) {
 					encontrado = true;
+					posCont = idCont;
 				}
 			}
 			if (!encontrado) {
@@ -580,139 +737,131 @@ void Sistema::valorarContenido(int id) {
 				cout << "La cantidad debe estar entre 0 y 5: ";
 			}
 		} while (!valido);
+		valido = false;
+		cout << "¿Cuántos segundos has visualizado del contenido?: ";
+		do {
+			cin >> segundos;
+			if (segundos >= 0) {
+				valido = true;
+			}
+			if (!valido) {
+				cout << "No puedes visualizar un tiempo negativo: ";
+			}
+		} while (!valido);
 		encontrado = false;
-		for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoValorado() && !encontrado; contenido++) {
-			if (idCont == this -> getUsuario(pos).getContenidoValorado(contenido).getId()) {
+		for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoValorado() && !encontrado; contenido++) {
+			if (idCont == this -> getUsuarioLogado().getContenidoValorado(contenido).getId()) {
 				encontrado = true;
 			}
 		}
 		if (!encontrado) {
-			this -> getUsuario(pos).setContenidoValorado(this -> getUsuario(pos).getUtilContenidoValorado(), this -> getContenido(idCont));
+			this -> getUsuarioLogado().setContenidoValorado(this -> getUsuarioLogado().getUtilContenidoValorado(), this -> getContenido(posCont));
 		}
 		Valoracion valoracion;
 		Fecha fecha;
 		fecha.setFecha(29, 5, 2024);
-		valoracion.setValoracion(this -> getUtilValoraciones(), this -> getContenido(idCont), this -> getUsuario(id), calificacion, fecha);
+		valoracion.setValoracion(this -> getUtilValoraciones(), this -> getContenido(posCont), this -> getUsuarioLogado(), segundos, calificacion, fecha);
 		this -> setValoracion(this -> getUtilValoraciones(), valoracion);
+		this -> setTotalValorated(this -> getTotalValorated() + 1);
 	}
 }
 
-void Sistema::gustarContenido(int id) {
-	int pos = this -> buscarUsuarioPorId(id);
+void Sistema::gustarContenido() {
 	cout << endl;
-	if (this -> getUsuario(pos).getUtilContenidoVisualizado() == 0) {
-		cout << "Debes visualizar al menos un contenido antes de hacer una valoración" << endl;
-	} else {
-		Contenido* v_contenido[this -> getUsuario(pos).getUtilContenidoVisualizado()];
-		Contenido* elegido;
-		int util_contenido = 0;
-		for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoVisualizado(); contenido++) {
-			Contenido *visto = &(this -> getUsuario(pos).getContenidoVisualizado(contenido));
-			bool valido = true;
-			for (int mg = 0; mg < this -> getUsuario(pos).getUtilContenidoMg() && valido; mg++) {
-				if (visto == &(this -> getUsuario(pos).getContenidoMg(mg))) {
-					valido = false;
-				}
-			}
-			for (int nomg = 0; nomg < this -> getUsuario(pos).getUtilContenidoNomg() && valido; nomg++) {
-				if (visto == &(this -> getUsuario(pos).getContenidoNomg(nomg))) {
-					valido = false;
-				}
-			}
-			if (valido) {
-				v_contenido[util_contenido] = visto;
-				util_contenido++;
+	Contenido* elegido;
+	int idCont;
+	bool encontrado = false;
+	cout << endl << "Introduce el id del contenido que quieres valorar: ";
+	do {
+		cin >> idCont;
+		for (int contenido = 0; contenido < this -> getUtilContenidos() && !encontrado; contenido++) {
+			if (idCont == this -> getContenido(contenido).getId()) {
+				encontrado = true;
+				elegido = &(this -> getContenido(contenido));
 			}
 		}
-		if (util_contenido == 0) {
-			cout << "Ya le has dado me gusta/no me gusta a todos tus contenidos visualizados" << endl;
-		} else {
-			for (int contenido = 0; contenido < util_contenido; contenido++) {
-				v_contenido[contenido] -> print();
-				cout << endl;
-			}
-			int idCont;
-			char gusta;
-			bool encontrado = false, valido = false;
-			cout << endl << "Introduce el id del contenido que quieres valorar: ";
-			do {
-				cin >> idCont;
-				for (int contenido = 0; contenido < util_contenido && !encontrado; contenido++) {
-					if (idCont == v_contenido[contenido] -> getId()) {
-						encontrado = true;
-						elegido = v_contenido[contenido];
-					}
-				}
-				if (!encontrado) {
-					cout << "El id no pertenece a ninguno de tus contenidos visualizados, introduce otro distinto: ";
-				}
-			} while (!encontrado);
-			this -> getUsuario(pos).setContenidoMg(this -> getUsuario(pos).getUtilContenidoMg(), *(elegido));
-			this -> setTotalLikes(this -> getTotalLikes() + 1);
-			elegido -> setTimesLiked(elegido -> getTimesLiked() + 1);
+		if (!encontrado) {
+			cout << "El id no pertenece a ningún contenido, introduce otro distinto: ";
 		}
+	} while (!encontrado);
+	bool mg = true, nomg = false;
+	for (int contenido = 0; mg && contenido < this -> getUsuarioLogado().getUtilContenidoMg(); contenido++) {
+		if (elegido == &(this -> getUsuarioLogado().getContenidoMg(contenido))) {
+			mg = false;
+		}
+	}
+	if (mg) {
+		this -> getUsuarioLogado().setContenidoMg(this -> getUsuarioLogado().getUtilContenidoMg() + 1, *(elegido));
+		this -> setTotalLikes(this -> getTotalLikes() + 1);
+		elegido -> setTimesLiked(elegido -> getTimesLiked() + 1);
+	}
+	for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoNomg(); contenido++) {
+		if (elegido == &(this -> getUsuarioLogado().getContenidoNomg(contenido))) {
+			nomg = true;
+		}
+		if (nomg && contenido < this -> getUsuarioLogado().getUtilContenidoNomg() - 1) {
+			this -> getUsuarioLogado().setContenidoNomg(contenido, this -> getUsuarioLogado().getContenidoNomg(contenido + 1));
+		} else if (nomg && contenido == this -> getUsuarioLogado().getUtilContenidoNomg() - 1) {
+			Contenido *vacio = 0;
+			this -> getUsuarioLogado().setContenidoNomg(contenido, *(vacio));
+			this -> getUsuarioLogado().setUtilContenidoNomg(this -> getUsuarioLogado().getUtilContenidoNomg() - 1);
+		}
+	}
+	if (nomg) {
+		this -> setTotalUnlikes(this -> getTotalUnlikes() - 1);
+		elegido -> setTimesNotLiked(elegido -> getTimesNotLiked() - 1);
 	}
 }
 
-void Sistema::nogustarContenido(int id) {
-	int pos = this -> buscarUsuarioPorId(id);
+void Sistema::nogustarContenido() {
 	cout << endl;
-	if (this -> getUsuario(pos).getUtilContenidoVisualizado() == 0) {
-		cout << "Debes visualizar al menos un contenido antes de hacer una valoración" << endl;
-	} else {
-		Contenido* v_contenido[this -> getUsuario(pos).getUtilContenidoVisualizado()];
-		Contenido* elegido;
-		int util_contenido = 0;
-		for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoVisualizado(); contenido++) {
-			Contenido *visto = &(this -> getUsuario(pos).getContenidoVisualizado(contenido));
-			bool valido = true;
-			for (int mg = 0; mg < this -> getUsuario(pos).getUtilContenidoMg() && valido; mg++) {
-				if (visto == &(this -> getUsuario(pos).getContenidoMg(mg))) {
-					valido = false;
-				}
-			}
-			for (int nomg = 0; nomg < this -> getUsuario(pos).getUtilContenidoNomg() && valido; nomg++) {
-				if (visto == &(this -> getUsuario(pos).getContenidoNomg(nomg))) {
-					valido = false;
-				}
-			}
-			if (valido) {
-				v_contenido[util_contenido] = visto;
-				util_contenido++;
+	Contenido* elegido;
+	int idCont;
+	bool encontrado = false;
+	cout << endl << "Introduce el id del contenido que quieres valorar: ";
+	do {
+		cin >> idCont;
+		for (int contenido = 0; contenido < this -> getUtilContenidos() && !encontrado; contenido++) {
+			if (idCont == this -> getContenido(contenido).getId()) {
+				encontrado = true;
+				elegido = &(this -> getContenido(contenido));
 			}
 		}
-		if (util_contenido == 0) {
-			cout << "Ya le has dado me gusta/no me gusta a todos tus contenidos visualizados" << endl;
-		} else {
-			for (int contenido = 0; contenido < util_contenido; contenido++) {
-				v_contenido[contenido] -> print();
-				cout << endl;
-			}
-			int idCont;
-			char gusta;
-			bool encontrado = false, valido = false;
-			cout << endl << "Introduce el id del contenido que quieres valorar: ";
-			do {
-				cin >> idCont;
-				for (int contenido = 0; contenido < util_contenido && !encontrado; contenido++) {
-					if (idCont == v_contenido[contenido] -> getId()) {
-						encontrado = true;
-						elegido = v_contenido[contenido];
-					}
-				}
-				if (!encontrado) {
-					cout << "El id no pertenece a ninguno de tus contenidos visualizados, introduce otro distinto: ";
-				}
-			} while (!encontrado);
-			this -> getUsuario(pos).setContenidoNomg(this -> getUsuario(pos).getUtilContenidoNomg(), *(elegido));
-			this -> setTotalUnlikes(this -> getTotalUnlikes() + 1);
-			elegido -> setTimesNotLiked(elegido -> getTimesNotLiked() + 1);
+		if (!encontrado) {
+			cout << "El id no pertenece a ningún contenido, introduce otro distinto: ";
 		}
+	} while (!encontrado);
+	bool nomg = true, mg = false;
+	for (int contenido = 0; nomg && contenido < this -> getUsuarioLogado().getUtilContenidoNomg(); contenido++) {
+		if (elegido == &(this -> getUsuarioLogado().getContenidoNomg(contenido))) {
+			nomg = false;
+		}
+	}
+	if (nomg) {
+		this -> getUsuarioLogado().setContenidoNomg(this -> getUsuarioLogado().getUtilContenidoNomg() + 1, *(elegido));
+		this -> setTotalUnlikes(this -> getTotalUnlikes() + 1);
+		elegido -> setTimesNotLiked(elegido -> getTimesNotLiked() + 1);
+	}
+	for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoMg(); contenido++) {
+		if (elegido == &(this -> getUsuarioLogado().getContenidoMg(contenido))) {
+			mg = true;
+		}
+		if (mg && contenido < this -> getUsuarioLogado().getUtilContenidoMg() - 1) {
+			this -> getUsuarioLogado().setContenidoMg(contenido, this -> getUsuarioLogado().getContenidoMg(contenido + 1));
+		} else if (mg && contenido == this -> getUsuarioLogado().getUtilContenidoMg() - 1) {
+			Contenido *vacio = 0;
+			this -> getUsuarioLogado().setContenidoMg(contenido, *(vacio));
+			this -> getUsuarioLogado().setUtilContenidoMg(this -> getUsuarioLogado().getUtilContenidoMg() - 1);
+		}
+	}
+	if (mg) {
+		this -> setTotalLikes(this -> getTotalLikes() - 1);
+		elegido -> setTimesLiked(elegido -> getTimesLiked() - 1);
 	}
 }
 
-void Sistema::visualizarContenido(int id) {
-	int pos = this -> buscarUsuarioPorId(id), idCont, calificacion;
+void Sistema::visualizarContenido() {
+	int idCont, calificacion, segundos;
 	bool encontrado = false, valido = false;
 	Contenido* elegido;
 	cout << endl << "Introduce el id del contenido que quieres buscar: ";
@@ -729,13 +878,13 @@ void Sistema::visualizarContenido(int id) {
 		}
 	} while (!encontrado);
 	encontrado = false;
-	for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoVisualizado() && !encontrado; contenido++) {
-		if (idCont == this -> getUsuario(pos).getContenidoVisualizado(contenido).getId()) {
+	for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoVisualizado() && !encontrado; contenido++) {
+		if (idCont == this -> getUsuarioLogado().getContenidoVisualizado(contenido).getId()) {
 			encontrado = true;
 		}
 	}
 	if (!encontrado) {
-		this -> getUsuario(pos).setContenidoVisualizado(this -> getUsuario(pos).getUtilContenidoVisualizado(), *(elegido));
+		this -> getUsuarioLogado().setContenidoVisualizado(this -> getUsuarioLogado().getUtilContenidoVisualizado(), *(elegido));
 	}
 	elegido -> setTimesPlayed(elegido -> getTimesPlayed() + 1);
 	this -> setTotalPlayed(this -> getTotalPlayed() + 1);
@@ -754,19 +903,33 @@ void Sistema::visualizarContenido(int id) {
 			cout << "La cantidad debe estar entre 0 y 5: ";
 		}
 	} while (!valido);
-	for (int contenido = 0; contenido < this -> getUsuario(pos).getUtilContenidoValorado() && !encontrado; contenido++) {
-		if (idCont == this -> getUsuario(pos).getContenidoValorado(contenido).getId()) {
+	valido = false;
+	cout << "¿Cuántos segundos has visualizado del contenido?: ";
+	do {
+		cin >> segundos;
+		if (segundos >= 0) {
+			valido = true;
+		}
+		if (!valido) {
+			cout << "No puedes visualizar un tiempo negativo: ";
+		}
+	} while (!valido);
+	for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoValorado() && !encontrado; contenido++) {
+		if (idCont == this -> getUsuarioLogado().getContenidoValorado(contenido).getId()) {
 			encontrado = true;
 		}
 	}
 	if (!encontrado) {
-		this -> getUsuario(pos).setContenidoValorado(this -> getUsuario(pos).getUtilContenidoValorado(), *(elegido));
+		this -> getUsuarioLogado().setContenidoValorado(this -> getUsuarioLogado().getUtilContenidoValorado(), *(elegido));
 	}
 	Valoracion valoracion;
 	Fecha fecha;
 	fecha.setFecha(29, 5, 2024);
-	valoracion.setValoracion(this -> getUtilValoraciones(), *(elegido), this -> getUsuario(id), calificacion, fecha);
+	valoracion.setValoracion(this -> getUtilValoraciones(), *(elegido), this -> getUsuarioLogado(), segundos, calificacion, fecha);
 	this -> setValoracion(this -> getUtilValoraciones(), valoracion);
+	elegido -> setTimesPlayed(elegido -> getTimesPlayed() + 1);
+	this -> setTotalPlayed(this -> getTotalPlayed() + 1);
+	this -> setTotalValorated(this -> getTotalValorated() + 1);
 }
 
 void Sistema::calcularCristoflixRating() {
@@ -802,49 +965,69 @@ void Sistema::calcularCristoflixRating() {
 }
 
 void Sistema::top3General() {
-	Contenido *rating[3], *visto[3], *nomg[3];
-	int util_rating = 0, util_visto = 0, util_nomg = 0;
-	for (int podio = 0; podio < 3; podio++) {
-		float mayorRating = 0;
-		int masVisto = 0, mayorNomg = 0;
-		for (int contenido = 0; contenido < this -> getUtilContenidos(); contenido++) {
-			Contenido *elegido = &(this -> getContenido(contenido));
-			if (elegido != rating[0] && elegido != rating[1] && elegido -> getCristoRating() > mayorRating) {
-				rating[podio] = elegido;
-				mayorRating = elegido -> getCristoRating();
-			}
-			if (elegido != visto[0] && elegido != visto[1] && elegido -> getTimesPlayed() > masVisto) {
-				visto[podio] = elegido;
-				masVisto = elegido -> getTimesPlayed();
-			}
-			if (elegido != nomg[0] && elegido != nomg[1] && elegido -> getTimesNotLiked() > mayorNomg) {
-				nomg[podio] = elegido;
-				mayorNomg = elegido -> getTimesNotLiked();
+	if (this -> getUtilContenidos() == 0) {
+		cout << endl << "No se puede hacer un rating si no existen contenidos de ese tipo" << endl;
+	} else {
+		int top = 3;
+		if (this -> getUtilContenidos() < top) {
+			top = this -> getUtilContenidos();
+			cout << endl << "Como no hay 3 contenidos, se va a realizar un top " << top << endl;
+		}
+		Contenido *rating[top], *visto[top], *nomg[top];
+		int util_rating = 0, util_visto = 0, util_nomg = 0;
+		for (int podio = 0; podio < top; podio++) {
+			float mayorRating = -1;
+			int masVisto = -1, mayorNomg = -1;
+			for (int contenido = 0; contenido < this -> getUtilContenidos(); contenido++) {
+				Contenido *elegido = &(this -> getContenido(contenido));
+				if (top > 1) {
+					if (elegido != rating[0] && elegido != rating[1] && elegido -> getCristoRating() > mayorRating) {
+						rating[podio] = elegido;
+						mayorRating = elegido -> getCristoRating();
+					}
+					if (elegido != visto[0] && elegido != visto[1] && elegido -> getTimesPlayed() > masVisto) {
+						visto[podio] = elegido;
+						masVisto = elegido -> getTimesPlayed();
+					}
+					if (elegido != nomg[0] && elegido != nomg[1] && elegido -> getTimesNotLiked() > mayorNomg) {
+						nomg[podio] = elegido;
+						mayorNomg = elegido -> getTimesNotLiked();
+					}
+				} else {
+					if (elegido -> getCristoRating() > mayorRating) {
+						rating[podio] = elegido;
+						mayorRating = elegido -> getCristoRating();
+					}
+					if (elegido -> getTimesPlayed() > masVisto) {
+						visto[podio] = elegido;
+						masVisto = elegido -> getTimesPlayed();
+					}
+					if (elegido -> getTimesNotLiked() > mayorNomg) {
+						nomg[podio] = elegido;
+						mayorNomg = elegido -> getTimesNotLiked();
+					}
+				}
 			}
 		}
+		cout << endl << "Top " << top << " contenidos mejor valorados del sistema" << endl << endl;
+		for (int podio = 0; podio < top; podio++) {
+			rating[podio] -> print();
+			cout << endl;
+		}
+		cout << "Top " << top << " contenidos más visualizados del sistema" << endl << endl;
+		for (int podio = 0; podio < top; podio++) {
+			visto[podio] -> print();
+			cout << endl;
+		}
+		cout << "Top " << top << " contenidos Xavi-Nadie te quiere" << endl << endl;
+		for (int podio = 0; podio < top; podio++) {
+			nomg[podio] -> print();
+			cout << endl;
+		}
 	}
-	cout << endl << "Top 3 contenidos mejor valorados del sistema" << endl << endl;
-	rating[0] -> print();
-	cout << endl;
-	rating[1] -> print();
-	cout << endl;
-	rating[2] -> print();
-	cout << endl << "Top 3 contenidos más visualizados del sistema" << endl << endl;
-	visto[0] -> print();
-	cout << endl;
-	visto[1] -> print();
-	cout << endl;
-	visto[2] -> print();
-	cout << endl << "Top 3 contenidos Xavi-Nadie te quiere" << endl << endl;
-	nomg[0] -> print();
-	cout << endl;
-	nomg[1] -> print();
-	cout << endl;
-	nomg[2] -> print();
-	cout << endl;
 }
 
-void Sistema::buscarContenido(int id) {
+void Sistema::buscarContenido() {
 	int eleccion;
 	bool valido = false;
 	cout << endl << "Selecciona el tipo de búsqueda" << endl << endl;
@@ -869,8 +1052,8 @@ void Sistema::buscarContenido(int id) {
 			for (int contenido = 0; contenido < this -> getUtilContenidos() && !encontrado; contenido++) {
 				if (idCont == this -> getContenido(contenido).getId()) {
 					encontrado = true;
-					this -> getUsuario(id).setUtilContenidoBuscado(0);
-					this -> getUsuario(id).setContenidoBuscado(this -> getUsuario(id).getUtilContenidoBuscado(), this -> getContenido(contenido));
+					this -> getUsuarioLogado().setUtilContenidoBuscado(0);
+					this -> getUsuarioLogado().setContenidoBuscado(this -> getUsuarioLogado().getUtilContenidoBuscado(), this -> getContenido(contenido));
 				}
 			}
 			if (!encontrado) {
@@ -878,7 +1061,7 @@ void Sistema::buscarContenido(int id) {
 			}
 		} while (!encontrado);
 		cout << endl;
-		this -> getUsuario(id).getContenidoBuscado(0).print();
+		this -> getUsuarioLogado().getContenidoBuscado(0).print();
 	} else if (eleccion == 2) {
 		string genero;
 		char cadena[50];
@@ -886,18 +1069,18 @@ void Sistema::buscarContenido(int id) {
 		cin.ignore();
 		cin.getline(cadena, 50);
 		genero = cadena;
-		this -> getUsuario(id).setUtilContenidoBuscado(0);
+		this -> getUsuarioLogado().setUtilContenidoBuscado(0);
 		for (int contenido = 0; contenido < this -> getUtilContenidos(); contenido++) {
 			if (genero == this -> getContenido(contenido).getGenero()) {
-				this -> getUsuario(id).setContenidoBuscado(this -> getUsuario(id).getUtilContenidoBuscado(), this -> getContenido(contenido));
+				this -> getUsuarioLogado().setContenidoBuscado(this -> getUsuarioLogado().getUtilContenidoBuscado(), this -> getContenido(contenido));
 			}
 		}
 		cout << endl;
-		if (this -> getUsuario(id).getUtilContenidoBuscado() == 0) {
+		if (this -> getUsuarioLogado().getUtilContenidoBuscado() == 0) {
 			cout << "No hay contenidos de género " << genero << endl;
 		} else {
-			for (int contenido = 0; contenido < this -> getUsuario(id).getUtilContenidoBuscado(); contenido++) {
-				this -> getUsuario(id).getContenidoBuscado(contenido).print();
+			for (int contenido = 0; contenido < this -> getUsuarioLogado().getUtilContenidoBuscado(); contenido++) {
+				this -> getUsuarioLogado().getContenidoBuscado(contenido).print();
 				cout << endl;
 			}
 		}
@@ -905,45 +1088,81 @@ void Sistema::buscarContenido(int id) {
 }
 
 void Sistema::topUsuarios() {
-	Usuario *dark_night, *facilon, *ofuscated;
-	float mediaMayor = 0.0;
-	int visto = 0, nomgMayor = 0;
-	for (int usuario = 0; usuario < this -> getUtilUsuarios(); usuario++) {
-		Usuario *elegido = &(this -> getUsuario(usuario));
-		if (elegido -> getUtilContenidoVisualizado() > visto) {
-			dark_night = elegido;
-			visto = elegido -> getUtilContenidoVisualizado();
-		}
-		float media = 0, calificacion[elegido -> getUtilContenidoValorado()];
-		int util_calificaciones = 0;			
-		for (int valoracion = 0; valoracion < this -> getUtilValoraciones(); valoracion++) {
-			if (elegido == &(this -> getValoracion(valoracion).getUsuario())) {
-				calificacion[util_calificaciones] = this -> getValoracion(valoracion).getCalificacion();
-				util_calificaciones++;
-			}
-		}
-		if (util_calificaciones != 0) {
-			for (int cali = 0; cali < util_calificaciones; cali++) {
-				media += calificacion[cali];
-			}
-			media /= util_calificaciones;
-		}
-		if (media > mediaMayor) {
-			facilon = elegido;
-			mediaMayor = media;
-		}
-		int nomg = 0;
-		for (int contenido = 0; contenido < elegido -> getUtilContenidoVisualizado(); contenido++) {
-			nomg += elegido -> getContenidoVisualizado(contenido).getTimesNotLiked();
-		}
-		if (nomg > nomgMayor) {
-			ofuscated = elegido;
-			nomgMayor = nomg;
-		}
+	bool existencias = true;
+	if (this -> getUtilContenidos() == 0) {
+		existencias = false;
 	}
-	cout << endl << "Usuario Dark-Night" << endl << *(dark_night) << endl;
-	cout << "Usuario Facilón" << endl << *(facilon) << endl;
-	cout << "Usuario Ofuscated" << endl << *(ofuscated) << endl;
+	if (existencias) {
+		int cantidad = 3;
+		if (this -> getUtilContenidos() < 3) {
+			cantidad = this -> getUtilContenidos();
+		}
+		Contenido *nomg[cantidad];
+		for (int podio = 0; podio < cantidad; podio++) {
+			int mayorNomg = -1;
+			for (int contenido = 0; contenido < this -> getUtilContenidos(); contenido++) {
+				Contenido *elegido = &(this -> getContenido(contenido));
+				if (elegido != nomg[0] && elegido != nomg[1] && elegido -> getTimesNotLiked() > mayorNomg) {
+					nomg[podio] = elegido;
+					mayorNomg = elegido -> getTimesNotLiked();
+				}
+			}
+		}
+		Usuario *dark_night, *facilon, *ofuscated;
+		float mediaMayor = -1.0;
+		int visto = -1, nomgMayor = -1;
+		for (int usuario = 0; usuario < this -> getUtilUsuarios(); usuario++) {
+			Usuario *elegido = &(this -> getUsuario(usuario));
+			if (elegido -> getUtilContenidoVisualizado() > visto) {
+				dark_night = elegido;
+				visto = elegido -> getUtilContenidoVisualizado();
+			}
+			float media = 0, calificacion[elegido -> getUtilContenidoValorado()];
+			int util_calificaciones = 0;			
+			for (int valoracion = 0; valoracion < this -> getUtilValoraciones(); valoracion++) {
+				if (elegido == &(this -> getValoracion(valoracion).getUsuario())) {
+					calificacion[util_calificaciones] = this -> getValoracion(valoracion).getCalificacion();
+					util_calificaciones++;
+				}
+			}
+			if (util_calificaciones != 0) {
+				for (int cali = 0; cali < util_calificaciones; cali++) {
+					media += calificacion[cali];
+				}
+				media /= util_calificaciones;
+			}
+			if (media > mediaMayor) {
+				facilon = elegido;
+				mediaMayor = media;
+			}
+			int coincidentes = 0;
+			for (int visualizado = 0; visualizado < elegido -> getUtilContenidoVisualizado(); visualizado++) {
+				for (int contenido = 0; contenido < cantidad; contenido++) {
+					if (&(elegido -> getContenidoVisualizado(visualizado)) == nomg[contenido]) {
+						bool valido = true;
+						for (int nogustado = 0; nogustado < elegido -> getUtilContenidoNomg(); nogustado++) {
+							if (&(elegido -> getContenidoNomg(nogustado)) == nomg[contenido]) {
+								valido = false;
+							}
+						}
+						if (valido) {
+							coincidentes++;
+						}
+					}
+				}
+			}
+			
+			if (coincidentes > nomgMayor) {
+				ofuscated = elegido;
+				nomgMayor = coincidentes;
+			}
+		}
+		cout << endl << "Usuario Dark-Night" << endl << *(dark_night) << endl;
+		cout << "Usuario Facilón" << endl << *(facilon) << endl;
+		cout << "Usuario Ofuscated" << endl << *(ofuscated);
+	} else {
+		cout << "Para hacer el ranking de usuarios es necesario al menos un contenido" << endl;
+	}
 }
 
 void Sistema::consultarValoracionContenido() {
@@ -1026,7 +1245,7 @@ void Sistema::top3ContenidosTipo() {
 				v_contenido[util_contenido] = p;
 				util_contenido++;
 			}
-		} else {
+		} else if (tipo == 3) {
 			if (Documental *d = dynamic_cast<Documental*>(elegido)) {
 				v_contenido[util_contenido] = d;
 				util_contenido++;
@@ -1044,10 +1263,10 @@ void Sistema::top3ContenidosTipo() {
 		Contenido *rating[top], *visto[top], *nomg[top];
 		int util_rating = 0, util_visto = 0, util_nomg = 0;
 		for (int podio = 0; podio < top; podio++) {
-			float mayorRating = 0;
-			int masVisto = 0, mayorNomg = 0;
-			for (int contenido = 0; contenido < this -> getUtilContenidos(); contenido++) {
-				Contenido *elegido = &(this -> getContenido(contenido));
+			float mayorRating = -1;
+			int masVisto = -1, mayorNomg = -1;
+			for (int contenido = 0; contenido < util_contenido; contenido++) {
+				elegido = v_contenido[contenido];
 				if (top > 1) {
 					if (elegido != rating[0] && elegido != rating[1] && elegido -> getCristoRating() > mayorRating) {
 						rating[podio] = elegido;
@@ -1093,4 +1312,116 @@ void Sistema::top3ContenidosTipo() {
 			cout << endl;
 		}
 	}
+}
+
+
+int Sistema::menuAdmin() {
+	int op1 = 0, op2 = 0;
+	int opFinal;
+	bool correcto = false;
+	cout << endl << "Acciones del administrador" << endl << endl;
+	cout << "1. Cambiar de usuario" << endl;
+	cout << "2. Generar datos básicos del sistema" << endl;
+	cout << "3. Imprimir datos del sistema" << endl;
+	cout << "4. Opciones de rankings" << endl;
+	cout << "5. Opciones de contenidos" << endl;
+	cout << "6. Opciones de usuarios" << endl;
+	cout << "7. Opciones de valoraciones" << endl;
+	cout << "8. Salir" << endl;
+	cout << "Introduce la opción que desea ejecutar: ";
+	do {
+		cin >> op1;
+		if (op1 >= 1 && op1 <= 8) {
+			correcto = true;
+		} else {
+			cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+		}
+	} while (!correcto);
+	if (op1 == 4) {
+		correcto = false;
+		cout << endl << "Acciones de rankings" << endl << endl;
+		cout << "1. Top 3 contenidos" << endl;
+		cout << "2. Top 3 de cada tipo de contenido" << endl;
+		cout << "3. Ranking de usuarios" << endl;
+		cout << "Introduce la opción que desea ejecutar: ";
+		do {
+			cin >> op2;
+			if (op2 >= 1 && op2 <= 3) {
+				correcto = true;
+			} else {
+				cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+			}
+		} while (!correcto);
+	} else if (op1 == 5) {
+		correcto = false;
+		cout << endl << "Acciones de contenidos" << endl << endl;
+		cout << "1. Agregar contenido" << endl;
+		cout << "2. Eliminar contenido" << endl;
+		cout << "3. Buscar contenido" << endl;
+		cout << "4. Modificar contenido" << endl;
+		cout << "5. Consultar la valoración del contenido" << endl;
+		cout << "Introduce la opción que desea ejecutar: ";
+		do {
+			cin >> op2;
+			if (op2 >= 1 && op2 <= 5) {
+				correcto = true;
+			} else {
+				cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+			}
+		} while (!correcto);
+	} else if (op1 == 6) {
+		correcto = false;
+		cout << endl << "Acciones de usuarios" << endl << endl;
+		cout << "1. Agregar usuario" << endl;
+		cout << "2. Eliminar usuario" << endl;
+		cout << "3. Buscar usuario" << endl;
+		cout << "4. Modificar usuario" << endl;
+		cout << "Introduce la opción que desea ejecutar: ";
+		do {
+			cin >> op2;
+			if (op2 >= 1 && op2 <= 4) {
+				correcto = true;
+			} else {
+				cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+			}
+		} while (!correcto);
+	} else if (op1 == 7) {
+		correcto = false;
+		cout << endl << "Acciones de contenidos" << endl << endl;
+		cout << "1. Consultar las valoraciones de un contenido y ver las métricas globales del mismo" << endl;
+		cout << "2. Eliminar valoración" << endl;
+		cout << "Introduce la opción que desea ejecutar: ";
+		do {
+			cin >> op2;
+			if (op2 >= 1 && op2 <= 2) {
+				correcto = true;
+			} else {
+				cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+			}
+		} while (!correcto);
+	}
+	opFinal = op1 * 10 + op2;
+	return opFinal;
+}
+
+int Sistema::menuCliente() {
+	int op;
+	bool correcto = false;
+	cout << endl << "Acciones del cliente" << endl << endl;
+	cout << "1. Cambiar de usuario" << endl;
+	cout << "2. Consultar valoraciones del usuario" << endl;
+	cout << "3. Me gusta" << endl;
+	cout << "4. No me gusta" << endl;
+	cout << "5. Visualizar contenido" << endl;
+	cout << "6. Salir" << endl;
+	cout << "Introduce la opción que desea ejecutar: ";
+	do {
+		cin >> op;
+		if (op >= 1 && op <= 6) {
+			correcto = true;
+		} else {
+			cout << "No ha introducido una acción correcta, inténtelo de nuevo: ";
+		}
+	} while (!correcto);
+	return op;
 }

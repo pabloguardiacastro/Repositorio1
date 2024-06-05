@@ -14,6 +14,7 @@ class Valoracion {
 		int id;
 		Contenido* contenido;
 		Usuario* usuario;
+		int segundos_visualizados;
 		float calificacion;
 		Fecha fechaValoracion;
 	public:
@@ -61,6 +62,15 @@ class Valoracion {
 		 * @version 1.0
 		 */
 		Usuario& getUsuario();
+		
+		/*
+		 * @brief Módulo que obtiene segundos_visualizados de una variable de tipo Valoracion.
+		 * @param this (E) Valoracion de la que se quiere obtener segundos_visualizados.
+		 * @return (S) segundos_visualizados de la valoracion.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int getSegundosVisualizados() const;
 		
 		/*
 		 * @brief Módulo que obtiene la calificacion de una variable de tipo Valoracion.
@@ -111,6 +121,16 @@ class Valoracion {
 		void setUsuario(Usuario &x);
 		
 		/*
+		 * @brief Módulo que cambia segundos_visualizados de una variable de tipo Valoracion.
+		 * @param this (E/S) Valoracion que se quiere cambiar segundos_visualizados.
+		 * @param x (E) segundos_visualizados de la valoracion.
+		 * @post Se cambió segundos_visualizados.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setSegundosVisualizados(int x);
+		
+		/*
 		 * @brief Módulo que cambia la calificacion de una variable de tipo Valoracion.
 		 * @param this (E/S) Valoracion que se quiere cambiar la calificacion.
 		 * @param x (E) Calificacion de la valoracion.
@@ -134,15 +154,16 @@ class Valoracion {
 		 * @brief Módulo que cambia una variable de tipo Valoracion.
 		 * @param this (E/S) Valoracion que se quiere cambiar.
 		 * @param id (E) Id de la valoracion.
-		 * @param contenido (E) Id de la valoracion.
-		 * @param usuario (E) Id de la valoracion.
-		 * @param calificacion (E) Id de la valoracion.
-		 * @param fechaValoracion (E) Id de la valoracion.
+		 * @param contenido (E) Contenido de la valoracion.
+		 * @param usuario (E) Usuario de la valoracion.
+		 * @param segundos_visualizados (E) segundos_visualizados de la valoracion.
+		 * @param calificacion (E) Calificacion de la valoracion.
+		 * @param fechaValoracion (E) Fecha de la valoracion.
 		 * @post Se cambió la valoracion.
 		 * @author proShoT2004
-		 * @version 1.0
+		 * @version 2.0
 		 */
-		void setValoracion(int id, Contenido &x, Usuario &usuario, float calificacion, Fecha &fechaValoracion);
+		void setValoracion(int id, Contenido &x, Usuario &usuario, int segundos_visualizados, float calificacion, Fecha &fechaValoracion);
 		
 		/*
 		 * @brief Módulo que asigna una valoracion a otra (operator=).

@@ -25,6 +25,10 @@ class Sistema {
 		int totalValorated;
 		int totalLikes;
 		int totalUnlikes;
+		int last_content_id;
+		int last_user_id;
+		int last_assessment_id;
+		Usuario *usuario_logado;
 	public:
 		/*
 		 * @brief Constructor de una variable de tipo Sistema.
@@ -43,6 +47,15 @@ class Sistema {
 		 * @version 1.0
 		 */
 		~Sistema();
+		
+		/*
+		 * @brief Inicializa una variable de tipo Sistema.
+		 * @param this (E) Sistema que se va a inicializar.
+		 * @post El sistema se inicializa con 15 usuarios, 10 contenidos y 45 valoraciones.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void inicializar();
 		
 		/*
 		 * @brief Módulo que obtiene el util_usuarios de una variable de tipo Sistema.
@@ -133,6 +146,42 @@ class Sistema {
 		 * @version 1.0
 		 */
 		int getTotalUnlikes();
+		
+		/*
+		 * @brief Módulo que obtiene last_content_id de una variable de tipo Sistema.
+		 * @param this (E) Sistema del que se quiere obtener last_content_id.
+		 * @return (S) last_content_id del sistema.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int getLastContentId();
+		
+		/*
+		 * @brief Módulo que obtiene last_user_id de una variable de tipo Sistema.
+		 * @param this (E) Sistema del que se quiere obtener last_user_id.
+		 * @return (S) last_user_id del sistema.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int getLastUserId();
+		
+		/*
+		 * @brief Módulo que obtiene last_assessment_id de una variable de tipo Sistema.
+		 * @param this (E) Sistema del que se quiere obtener last_assessment_id.
+		 * @return (S) last_assessment_id del sistema.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int getLastAssessmentId();
+		
+		/*
+		 * @brief Módulo que obtiene usuario_logado de una variable de tipo Sistema.
+		 * @param this (E) Sistema del que se quiere obtener usuario_logado.
+		 * @return (S) usuario_logado del sistema.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		Usuario& getUsuarioLogado();
 		
 		/*
 		 * @brief Módulo que cambia el util_usuarios de una variable de tipo Sistema.
@@ -235,6 +284,46 @@ class Sistema {
 		void setTotalUnlikes(int x);
 		
 		/*
+		 * @brief Módulo que cambia last_content_id de una variable de tipo Sistema.
+		 * @param this (E/S) Sistema que se quiere cambiar la last_content_id.
+		 * @param x (E) last_content_id del sistema.
+		 * @post Se cambió last_content_id.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setLastContentId(int x);
+		
+		/*
+		 * @brief Módulo que cambia last_user_id de una variable de tipo Sistema.
+		 * @param this (E/S) Sistema que se quiere cambiar la last_user_id.
+		 * @param x (E) last_user_id del sistema.
+		 * @post Se cambió last_user_id.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setLastUserId(int x);
+		
+		/*
+		 * @brief Módulo que cambia last_assessment_id de una variable de tipo Sistema.
+		 * @param this (E/S) Sistema que se quiere cambiar la last_assessment_id.
+		 * @param x (E) last_assessment_id del sistema.
+		 * @post Se cambió last_assessment_id.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setLastAssessmentId(int x);
+		
+		/*
+		 * @brief Módulo que cambia usuario_logado de una variable de tipo Sistema.
+		 * @param this (E/S) Sistema que se quiere cambiar la usuario_logado.
+		 * @param x (E) usuario_logado del sistema.
+		 * @post Se cambió usuario_logado.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void setUsuarioLogado(Usuario &x);
+		
+		/*
 		 * @brief Módulo que obtiene el usuario de la posición especificada por el parámetro de una variable de tipo Sistema.
 		 * @param this (E) Sistema del que se quiere obtener el usuario.
 		 * @param pos (E) Posición de la que se quiere obtener el usuario.
@@ -325,6 +414,14 @@ class Sistema {
 		void resizeValoraciones(int tamanio);
 		
 		/*
+		 * @brief Módulo que permite al usuario interactuar con el sistema.
+		 * @param this (E/S) Sistema con el que se quiere interactuar.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		void programa();
+		
+		/*
 		 * @brief Módulo que imprime el sistema.
 		 * @param flujo (E) Objeto que permite imprimir por pantalla.
 		 * @param v (E) Sistema que se quiere imprimir.
@@ -362,9 +459,9 @@ class Sistema {
 		 * @return (S) id del usuario que hizo login.
 		 * @post El usuario está en el Sistema y no pueden haber dos con mismo id.
 		 * @author proShoT2004
-		 * @version 1.0
+		 * @version 2.0
 		 */
-		int login();
+		void login();
 		
 		/*
 		 * @brief Módulo que imprime las valoraciones y los datos sobre los contenidos de un usuario.
@@ -374,7 +471,7 @@ class Sistema {
 		 * @author proShoT2004
 		 * @version 2.0
 		 */
-		void consultarValoracionesUsuario(int id);
+		void consultarValoracionesUsuario();
 		
 		/*
 		 * @brief Módulo que permite a un usuario valorar un contenido.
@@ -385,7 +482,7 @@ class Sistema {
 		 * @author proShoT2004
 		 * @version 1.0
 		 */
-		void valorarContenido(int id);
+		void valorarContenido();
 		
 		/*
 		 * @brief Módulo que permite a un usuario dar mg a un contenido.
@@ -394,9 +491,9 @@ class Sistema {
 		 * @pre El id pertenece a un usuario del sistema.
 		 * @post El usuario tiene un nuevo contenido en sus mg.
 		 * @author proShoT2004
-		 * @version 3.0
+		 * @version 4.0
 		 */
-		void gustarContenido(int id);
+		void gustarContenido();
 		
 		/*
 		 * @brief Módulo que permite a un usuario dar nomg a un contenido.
@@ -405,9 +502,9 @@ class Sistema {
 		 * @pre El id pertenece a un usuario del sistema.
 		 * @post El usuario tiene un nuevo contenido en sus nomg.
 		 * @author proShoT2004
-		 * @version 1.0
+		 * @version 2.0
 		 */
-		void nogustarContenido(int id);
+		void nogustarContenido();
 		
 		/*
 		 * @brief Módulo que permite a un usuario visualizar y valorar un contenido.
@@ -418,7 +515,7 @@ class Sistema {
 		 * @author proShoT2004
 		 * @version 3.0
 		 */
-		void visualizarContenido(int id);
+		void visualizarContenido();
 		
 		/*
 		 * @brief Módulo que calcula el cristoRating de todos los contenidos de un Sistema.
@@ -446,7 +543,7 @@ class Sistema {
 		 * @author proShoT2004
 		 * @version 1.0
 		 */
-		void buscarContenido(int id);
+		void buscarContenido();
 		
 		/*
 		 * @brief Módulo que muestra a los usuarios dark_night, facilon y ofuscated.
@@ -471,6 +568,24 @@ class Sistema {
 		 * @version 1.0
 		 */
 		void top3ContenidosTipo();
+		
+		/*
+		 * @brief Módulo que imprime el menú para administradores y pide qué función se va a ejecutar.
+		 * @return (S) Función que se va a ejecutar.
+		 * @post La función es una de las que se imprimen.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int menuAdmin();
+
+		/*
+		 * @brief Módulo que imprime el menú para clientes y pide qué función se va a ejecutar.
+		 * @return (S) Función que se va a ejecutar.
+		 * @post La función es una de las que se imprimen.
+		 * @author proShoT2004
+		 * @version 1.0
+		 */
+		int menuCliente();
 };
 
 #endif

@@ -11,6 +11,7 @@ Contenido::Contenido() {
 	this -> setTimesLiked(0);
 	this -> setTimesNotLiked(0);
 	this -> setCristoRating(0);
+	this -> setActivo(true);
 }
 
 int Contenido::getId() const {
@@ -57,6 +58,10 @@ float Contenido::getCristoRating() const {
 	return this -> cristoRating;
 }
 
+bool Contenido::getActivo() const {
+	return this -> activo;
+}
+
 void Contenido::setId(int x) {
 	this -> id = x;
 }
@@ -101,6 +106,10 @@ void Contenido::setCristoRating(float x) {
 	this -> cristoRating = x;
 }
 
+void Contenido::setActivo(bool x) {
+	this -> activo = x;
+}
+
 void Contenido::setContenido(int id, const string &titulo, const Fecha &fechaLanzamiento, int duracion, const string &genero, float rating, int votos) {
 	this -> setId(id);
 	this -> setTitulo(titulo);
@@ -113,6 +122,10 @@ void Contenido::setContenido(int id, const string &titulo, const Fecha &fechaLan
 
 Contenido& Contenido::operator=(Contenido &c) {
 	this -> setContenido(c.getId(), c.getTitulo(), c.getFechaLanzamiento(), c.getDuracion(), c.getGenero(), c.getRating(), c.getVotos());
+	this -> setTimesPlayed(c.getTimesPlayed());
+	this -> setTimesLiked(c.getTimesLiked());
+	this -> setTimesNotLiked(c.getTimesNotLiked());
+	this -> setActivo(c.getActivo());
 	return *this;
 }
 
